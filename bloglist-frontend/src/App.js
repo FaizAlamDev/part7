@@ -6,6 +6,12 @@ import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import {
+	removeNotification,
+	setNotification,
+} from './reducers/notificationReducer'
+import { useDispatch } from 'react-redux'
+import { removeError, setError } from './reducers/errorReducer'
 
 const App = () => {
 	const [blogs, setBlogs] = useState([])
@@ -13,8 +19,7 @@ const App = () => {
 	const [password, setPassword] = useState('')
 	const [user, setUser] = useState(null)
 
-	const [msg, setMsg] = useState(null)
-	const [error, setError] = useState(null)
+	const dispatch = useDispatch()
 
 	const BlogFormRef = useRef()
 
@@ -40,15 +45,14 @@ const App = () => {
 			setUser(user)
 			setUsername('')
 			setPassword('')
-			setMsg(`${user.name} logged in`)
+			dispatch(setNotification(`${user.name} logged in`))
 			setTimeout(() => {
-				setMsg(null)
+				dispatch(removeNotification())
 			}, 4000)
 		} catch (exception) {
-			console.log(exception)
-			setError('wrong username or password')
+			dispatch(setError('wrong username or password'))
 			setTimeout(() => {
-				setError(null)
+				dispatch(removeError())
 			}, 4000)
 		}
 	}
@@ -64,11 +68,13 @@ const App = () => {
 		blogService.setToken(user.token)
 		const returnedBlog = await blogService.create(blogObject)
 		setBlogs(blogs.concat({ ...returnedBlog, user }))
-		setMsg(
-			`a new blog '${returnedBlog.title}' by ${returnedBlog.author} added`
+		dispatch(
+			setNotification(
+				`a new blog '${returnedBlog.title}' by ${returnedBlog.author} added`
+			)
 		)
 		setTimeout(() => {
-			setMsg(null)
+			dispatch(removeNotification())
 		}, 4000)
 	}
 
@@ -92,7 +98,7 @@ const App = () => {
 		return (
 			<div>
 				<h2>Log in to application</h2>
-				<Error error={error} />
+				<Error />
 				<form onSubmit={handleLogin}>
 					<div>
 						username:
@@ -125,7 +131,7 @@ const App = () => {
 	return (
 		<div>
 			<h2>blogs</h2>
-			<Notification message={msg} />
+			<Notification />
 			<p>
 				{user.username} logged in{' '}
 				<button onClick={handleLogout}>logout</button>
