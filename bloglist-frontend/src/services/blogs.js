@@ -26,6 +26,15 @@ const update = async (id, newObject) => {
 	return response.data
 }
 
+const like = async (id) => {
+	const object = await axios.get(`${baseUrl}/${id}`)
+	const changed = {
+		...object.data,
+		likes: (object.data.likes += 1),
+	}
+	return update(id, changed)
+}
+
 const remove = async (id) => {
 	const config = {
 		headers: { Authorization: token },
@@ -34,6 +43,6 @@ const remove = async (id) => {
 	return response.data
 }
 
-const exports = { getAll, create, update, setToken, remove }
+const exports = { getAll, create, update, like, setToken, remove }
 
 export default exports
