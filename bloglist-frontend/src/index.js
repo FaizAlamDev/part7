@@ -8,6 +8,7 @@ import blogReducer from './reducers/blogReducer'
 import App from './App'
 import './index.css'
 import userReducer from './reducers/userReducer'
+import usersReducer from './reducers/usersReducer'
 
 const store = configureStore({
 	reducer: {
@@ -15,6 +16,7 @@ const store = configureStore({
 		error: errorReducer,
 		blogs: blogReducer,
 		user: userReducer,
+		users: usersReducer,
 	},
 })
 

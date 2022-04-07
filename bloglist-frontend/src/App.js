@@ -1,34 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
+import React, { useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Notification from './components/Notification'
-import Error from './components/Error'
-import BlogForm from './components/BlogForm'
-import Togglable from './components/Togglable'
-import blogService from './services/blogs'
-import loginService from './services/login'
+import LoginForm from './components/LoginForm'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-	removeNotification,
-	setNotification,
-} from './reducers/notificationReducer'
-import { removeError, setError } from './reducers/errorReducer'
-import {
-	addBlog,
-	initializeBlogs,
-	like,
-	removeBlog,
-} from './reducers/blogReducer'
+import { initializeBlogs } from './reducers/blogReducer'
 import { setUser } from './reducers/userReducer'
+import Users from './components/Users'
+import BlogCreate from './components/BlogCreate'
 
 const App = () => {
-	const blogs = useSelector((state) => state.blogs)
 	const user = useSelector((state) => state.user)
-	const [username, setUsername] = useState('')
-	const [password, setPassword] = useState('')
 
 	const dispatch = useDispatch()
-
-	const BlogFormRef = useRef()
 
 	useEffect(() => {
 		dispatch(initializeBlogs())
@@ -40,30 +23,7 @@ const App = () => {
 			const user = JSON.parse(loggedUserJSON)
 			dispatch(setUser(user))
 		}
-	}, [])
-
-	const handleLogin = async (e) => {
-		e.preventDefault()
-
-		try {
-			const user = await loginService.login({ username, password })
-			blogService.setToken(user.token)
-			window.localStorage.setItem('loggedInUser', JSON.stringify(user))
-			dispatch(setUser(user))
-			setUsername('')
-			setPassword('')
-			dispatch(setNotification(`${user.name} logged in`))
-			setTimeout(() => {
-				dispatch(removeNotification())
-			}, 4000)
-		} catch (exception) {
-			console.log(exception)
-			dispatch(setError('wrong username or password'))
-			setTimeout(() => {
-				dispatch(removeError())
-			}, 4000)
-		}
-	}
+	}, [dispatch])
 
 	const handleLogout = (e) => {
 		e.preventDefault()
@@ -71,60 +31,8 @@ const App = () => {
 		dispatch(setUser(null))
 	}
 
-	const createBlog = async (blogObject) => {
-		BlogFormRef.current.toggleVisibility()
-		blogService.setToken(user.token)
-		dispatch(addBlog(blogObject))
-		dispatch(
-			setNotification(
-				`a new blog '${blogObject.title}' by ${blogObject.author} added`
-			)
-		)
-		setTimeout(() => {
-			dispatch(removeNotification())
-		}, 4000)
-	}
-
-	const incrementLikes = async (id) => {
-		dispatch(like(id))
-	}
-
-	const deleteBlog = async (id) => {
-		dispatch(removeBlog(id, user))
-	}
-
 	if (user === null) {
-		return (
-			<div>
-				<h2>Log in to application</h2>
-				<Error />
-				<form onSubmit={handleLogin}>
-					<div>
-						username:
-						<input
-							id='username'
-							type='text'
-							value={username}
-							name='Username'
-							onChange={({ target }) => setUsername(target.value)}
-						/>
-					</div>
-					<div>
-						password:
-						<input
-							id='password'
-							type='password'
-							value={password}
-							name='Password'
-							onChange={({ target }) => setPassword(target.value)}
-						/>
-					</div>
-					<button id='loginBtn' type='submit'>
-						login
-					</button>
-				</form>
-			</div>
-		)
+		return <LoginForm />
 	}
 
 	return (
@@ -135,21 +43,12 @@ const App = () => {
 				{user.username} logged in{' '}
 				<button onClick={handleLogout}>logout</button>
 			</p>
-			<Togglable ref={BlogFormRef} buttonLabel='create new blog'>
-				<BlogForm createBlog={createBlog} />
-			</Togglable>
-			{blogs
-				.slice()
-				.sort((a, b) => b.likes - a.likes)
-				.map((blog) => (
-					<Blog
-						key={blog.id}
-						blog={blog}
-						user={user}
-						handleLikes={() => incrementLikes(blog.id)}
-						handleRemove={() => deleteBlog(blog.id)}
-					/>
-				))}
+			<Router>
+				<Routes>
+					<Route path='/' element={<BlogCreate />} />
+					<Route path='/users' element={<Users />} />
+				</Routes>
+			</Router>
 		</div>
 	)
 }

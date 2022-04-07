@@ -34,10 +34,10 @@ export const initializeBlogs = () => {
 	}
 }
 
-export const addBlog = (blogObj) => {
+export const addBlog = (blogObj, user) => {
 	return async (dispatch) => {
 		const newBlog = await blogService.create(blogObj)
-		dispatch(appendBlog(newBlog))
+		dispatch(appendBlog({ ...newBlog, user }))
 	}
 }
 
