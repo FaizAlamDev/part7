@@ -7,14 +7,16 @@ import { initializeBlogs } from './reducers/blogReducer'
 import { setUser } from './reducers/userReducer'
 import Users from './components/Users'
 import BlogCreate from './components/BlogCreate'
+import User from './components/User'
+import { initializeUsers } from './reducers/usersReducer'
 
 const App = () => {
 	const user = useSelector((state) => state.user)
-
 	const dispatch = useDispatch()
 
 	useEffect(() => {
 		dispatch(initializeBlogs())
+		dispatch(initializeUsers())
 	}, [dispatch])
 
 	useEffect(() => {
@@ -47,6 +49,7 @@ const App = () => {
 				<Routes>
 					<Route path='/' element={<BlogCreate />} />
 					<Route path='/users' element={<Users />} />
+					<Route path='/users/:id' element={<User />} />
 				</Routes>
 			</Router>
 		</div>
