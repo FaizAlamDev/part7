@@ -22,8 +22,6 @@ const LoginForm = () => {
 			blogService.setToken(user.token)
 			window.localStorage.setItem('loggedInUser', JSON.stringify(user))
 			dispatch(setUser(user))
-			setUsername('')
-			setPassword('')
 			dispatch(setNotification(`${user.name} logged in`))
 			setTimeout(() => {
 				dispatch(removeNotification())
