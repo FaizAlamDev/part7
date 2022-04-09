@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMatch, useNavigate } from 'react-router-dom'
-import { like, removeBlog } from '../reducers/blogReducer'
+import { addComment, like, removeBlog } from '../reducers/blogReducer'
 
 const SingleBlog = () => {
 	const blogs = useSelector((state) => state.blogs)
 	const user = useSelector((state) => state.user)
+	const [comment, setComment] = useState('')
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const match = useMatch('/blogs/:id')
@@ -24,11 +25,21 @@ const SingleBlog = () => {
 		navigate('/')
 	}
 
+	const handleComment = (e) => {
+		setComment(e.target.value)
+	}
+
+	const commentFunc = (e) => {
+		e.preventDefault()
+		dispatch(addComment(blog.id, comment))
+		setComment('')
+	}
+
 	return (
 		<div>
 			<h2>{blog.title}</h2>
 			<div>
-				<a href={blog.url}>{blog.url}</a>
+				<a href={`https://${blog.url}`}>{blog.url}</a>
 			</div>
 			<div>
 				{blog.likes} likes{' '}
@@ -39,6 +50,10 @@ const SingleBlog = () => {
 				<button onClick={() => handleRemove(blog.id)}>remove</button>
 			) : null}
 			<h3>comments</h3>
+			<form onSubmit={commentFunc}>
+				<input value={comment} onChange={handleComment} />
+				<button type='submit'>add comment</button>
+			</form>
 			<ul>
 				{blog.comments.map((comment) => (
 					<li key={Math.random() * comment.length}>{comment}</li>
