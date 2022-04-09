@@ -39,6 +39,7 @@ blogsRouter.post('/', async (request, response) => {
 		url: body.url,
 		likes: body.likes,
 		user: user._id,
+		comments: [],
 	})
 
 	const savedBlog = await blog.save()
@@ -67,6 +68,23 @@ blogsRouter.put('/:id', async (request, response) => {
 	const blog = {
 		likes: body.likes,
 	}
+
+	const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+		new: true,
+	})
+	response.json(updatedBlog)
+})
+
+blogsRouter.post('/:id/comments', async (request, response) => {
+	const body = request.body
+	if (!body) {
+		return response.status(400).json({
+			error: 'content missing',
+		})
+	}
+
+	const blog = await Blog.findById(request.params.id)
+	blog.comments.push(body.comment)
 
 	const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
 		new: true,

@@ -38,6 +38,12 @@ const SingleBlog = () => {
 			{blog.user.name === user.name ? (
 				<button onClick={() => handleRemove(blog.id)}>remove</button>
 			) : null}
+			<h3>comments</h3>
+			<ul>
+				{blog.comments.map((comment) => (
+					<li key={Math.random() * comment.length}>{comment}</li>
+				))}
+			</ul>
 		</div>
 	)
 }
