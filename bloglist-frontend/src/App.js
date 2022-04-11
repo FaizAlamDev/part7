@@ -1,21 +1,26 @@
 import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
-import { useDispatch, useSelector } from 'react-redux'
-import { initializeBlogs } from './reducers/blogReducer'
-import { setUser } from './reducers/userReducer'
+import SingleBlog from './components/SingleBlog'
 import Users from './components/Users'
 import BlogCreate from './components/BlogCreate'
 import User from './components/User'
+import { initializeBlogs } from './reducers/blogReducer'
+import { setUser } from './reducers/userReducer'
 import { initializeUsers } from './reducers/usersReducer'
-import SingleBlog from './components/SingleBlog'
+import { Button, Nav, Navbar } from 'react-bootstrap'
 
 const App = () => {
-	const style = {
+	const padding = {
 		padding: 5,
-		background: '#cccccc',
 	}
+	const loggedIn = {
+		padding: 8,
+		color: '#999999',
+	}
+
 	const user = useSelector((state) => state.user)
 	const dispatch = useDispatch()
 
@@ -39,23 +44,38 @@ const App = () => {
 	}
 
 	if (user === null) {
-		return <LoginForm />
+		return (
+			<div className='container'>
+				<LoginForm />
+			</div>
+		)
 	}
 
 	return (
-		<div>
+		<div className='container'>
 			<Router>
-				<div style={style}>
-					<Link style={style} to={'/'}>
-						blogs
-					</Link>
-					<Link style={style} to={'/users'}>
-						users
-					</Link>
-					{user.username} logged in{' '}
-					<button onClick={handleLogout}>logout</button>
-				</div>
-				<h2>blog app</h2>
+				<Navbar collapseOnSelect expand='lg' bg='dark' variant='dark'>
+					<Navbar.Toggle aria-controls='responsive-navbar-nav' />
+					<Navbar.Collapse id='responsive-navbar-nav'>
+						<Nav className='mr-auto'>
+							<Nav.Link href='#' as='span'>
+								<Link style={padding} to='/'>
+									Blogs
+								</Link>
+							</Nav.Link>
+							<Nav.Link href='#' as='span'>
+								<Link style={padding} to='/users'>
+									Users
+								</Link>
+							</Nav.Link>
+							<em style={loggedIn}>{user.username} logged in</em>
+							<Button variant='secondary' onClick={handleLogout}>
+								Logout
+							</Button>
+						</Nav>
+					</Navbar.Collapse>
+				</Navbar>
+				<h1>Blog App</h1>
 				<Notification />
 				<Routes>
 					<Route path='/' element={<BlogCreate />} />

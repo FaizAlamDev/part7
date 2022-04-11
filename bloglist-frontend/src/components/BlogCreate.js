@@ -29,7 +29,7 @@ const BlogCreate = () => {
 	}
 	return (
 		<div>
-			<Togglable ref={BlogFormRef} buttonLabel='create new blog'>
+			<Togglable ref={BlogFormRef} buttonLabel='Create new blog'>
 				<BlogForm createBlog={createBlog} />
 			</Togglable>
 			<BlogList />

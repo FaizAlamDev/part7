@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Button, Form, ListGroup } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMatch, useNavigate } from 'react-router-dom'
 import { addComment, like, removeBlog } from '../reducers/blogReducer'
@@ -37,28 +38,42 @@ const SingleBlog = () => {
 
 	return (
 		<div>
-			<h2>{blog.title}</h2>
+			<h2>
+				{blog.title} - {blog.author}
+			</h2>
+			<hr />
 			<div>
 				<a href={`https://${blog.url}`}>{blog.url}</a>
 			</div>
 			<div>
 				{blog.likes} likes{' '}
-				<button onClick={() => handleLike(blog.id)}>like</button>
+				<Button variant='info' onClick={() => handleLike(blog.id)}>
+					Like
+				</Button>
 			</div>
-			<div>added by {blog.author}</div>
+			<div>Added by {blog.user.name}</div>
 			{blog.user.name === user.name ? (
-				<button onClick={() => handleRemove(blog.id)}>remove</button>
+				<Button variant='warning' onClick={() => handleRemove(blog.id)}>
+					remove
+				</Button>
 			) : null}
+			<br />
+			<hr />
 			<h3>comments</h3>
-			<form onSubmit={commentFunc}>
-				<input value={comment} onChange={handleComment} />
-				<button type='submit'>add comment</button>
-			</form>
-			<ul>
-				{blog.comments.map((comment) => (
-					<li key={Math.random() * comment.length}>{comment}</li>
-				))}
-			</ul>
+			<Form onSubmit={commentFunc}>
+				<Form.Group>
+					<Form.Control value={comment} onChange={handleComment} />
+					<Button variant='primary' type='submit'>
+						Add Comment
+					</Button>
+				</Form.Group>
+			</Form>
+			<br />
+			{blog.comments.map((comment) => (
+				<ListGroup key={Math.random() * comment.length}>
+					<ListGroup.Item>{comment}</ListGroup.Item>
+				</ListGroup>
+			))}
 		</div>
 	)
 }

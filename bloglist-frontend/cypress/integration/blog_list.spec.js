@@ -13,7 +13,7 @@ describe('Blog app', function () {
 
 	it('Login form is shown', function () {
 		cy.contains('Log in to application')
-		cy.contains('username')
+		cy.contains('Username')
 		cy.contains('password')
 		cy.get('#loginBtn').should('contain', 'login')
 	})
@@ -48,7 +48,7 @@ describe('Blog app', function () {
 			})
 
 			it('A blog can be created', function () {
-				cy.contains('create new blog').click()
+				cy.contains('Create new blog').click()
 				cy.contains('create new')
 
 				cy.get('#title').type('Jest')

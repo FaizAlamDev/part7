@@ -9,6 +9,7 @@ import {
 } from '../reducers/notificationReducer'
 import { removeError, setError } from '../reducers/errorReducer'
 import Error from './Error'
+import { Button, Form } from 'react-bootstrap'
 
 const LoginForm = () => {
 	const [username, setUsername] = useState('')
@@ -38,31 +39,29 @@ const LoginForm = () => {
 		<div>
 			<h2>Log in to application</h2>
 			<Error />
-			<form onSubmit={handleLogin}>
-				<div>
-					username:
-					<input
+			<Form onSubmit={handleLogin}>
+				<Form.Group>
+					<Form.Label>Username</Form.Label>
+					<Form.Control
 						id='username'
 						type='text'
 						value={username}
 						name='Username'
 						onChange={({ target }) => setUsername(target.value)}
 					/>
-				</div>
-				<div>
-					password:
-					<input
+					<Form.Label>Password</Form.Label>
+					<Form.Control
 						id='password'
 						type='password'
 						value={password}
 						name='Password'
 						onChange={({ target }) => setPassword(target.value)}
 					/>
-				</div>
-				<button id='loginBtn' type='submit'>
-					login
-				</button>
-			</form>
+					<Button variant='primary' id='loginBtn' type='submit'>
+						login
+					</Button>
+				</Form.Group>
+			</Form>
 		</div>
 	)
 }
